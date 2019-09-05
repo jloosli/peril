@@ -1,0 +1,7 @@
+<div #gameBoard *ngIf="vm$ | async as vm" class="game-board">
+  <div *ngFor="let category of vm.categories; index as i" class="category-name">{{category.name}}</div>
+  <ng-container *ngFor="let value of values">
+    <div (click)="goToAnswer(category.id, i)" *ngFor="let category of vm.categories; index as i"
+         class="clue">{{value}}</div>
+  </ng-container>
+</div>

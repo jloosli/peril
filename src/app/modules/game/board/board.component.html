@@ -1,0 +1,6 @@
+<div *ngIf="vm$ | async as vm" class="game-board">
+  <mat-toolbar color="primary"><span class="game-title"><span *ngIf="vm.double">DOUBLE </span>PERIL!</span>
+  </mat-toolbar>
+  <app-grid></app-grid>
+  <app-score></app-score>
+</div>

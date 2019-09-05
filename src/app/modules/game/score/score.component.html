@@ -1,0 +1,5 @@
+<div *ngIf="vm$ | async as vm">
+  <div *ngFor="let team of vm.teams" class="scorecard">
+    <div class="team-name">{{team.name}}</div>
+    <div class="team-score">{{team.score}}</div>
+  </div>

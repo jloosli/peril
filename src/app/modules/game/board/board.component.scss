@@ -1,0 +1,22 @@
+.game-board {
+  height: 100vh;
+  display: grid;
+  grid-template: "header" auto "board" 1fr "scores" auto
+  / auto;
+
+  mat-toolbar {
+    grid-area: header;
+  }
+
+  app-grid {
+    grid-area: board;
+  }
+
+  app-score {
+    grid-area: scores;
+  }
+}
+
+.game-title {
+  font-family: Righteous, cursive;
+}

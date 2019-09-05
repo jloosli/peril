@@ -1,0 +1,6 @@
+<div *ngIf="vm$ | async as vm">
+  <div (click)="backToGame()" class="question">
+    {{vm.question}}
+  </div>
+</div>
+

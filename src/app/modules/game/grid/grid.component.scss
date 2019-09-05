@@ -1,0 +1,26 @@
+@import 'theme';
+
+.game-board {
+  font-size: 4vmin;
+  --colNum: 6;
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(var(--colNum), [col-start] 1fr);
+  grid-template-rows: [category-start] 1fr [category-end] repeat(5, [row-start] 1fr);
+  height: 100%;
+  grid-gap: 0.5rem;
+
+  & > div {
+    background-color: mat-color($peril-primary, 500);
+    display: grid;
+    place-content: center;
+    text-align: center;
+  }
+
+  .category-name {
+    font-weight: 700;
+  }
+
+  .clue {
+  }
+}
