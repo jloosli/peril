@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {QuestionsService} from '@service/questions.service';
 import {combineLatest, Observable} from 'rxjs';
@@ -14,6 +14,10 @@ export class AnswerComponent implements OnInit {
 
   vm$: Observable<{ answer: string }>;
 
+  @HostListener('click') onClick() {
+    this.router.navigate(['question'], {relativeTo: this.route});
+  }
+
   constructor(private route: ActivatedRoute, private router: Router, private questionsSvc: QuestionsService) {
   }
 
@@ -26,10 +30,6 @@ export class AnswerComponent implements OnInit {
         return {answer};
       }),
     );
-  }
-
-  goToQuestion() {
-    this.router.navigate(['question'], {relativeTo: this.route});
   }
 
 }

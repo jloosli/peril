@@ -1,0 +1,40 @@
+@import 'theme';
+
+:host {
+  margin: 1rem;
+}
+
+.scores {
+  display: flex;
+  justify-content: space-around;
+
+  .scorecard {
+    display: grid;
+    place-content: center;
+    text-align: center;
+    grid-gap: 0.5rem;
+    grid-template: " score " 1fr " name " 2fr
+    / minmax(200px, 1fr);
+
+    text-shadow: .1em .1em .1em mat-color($mat-grey, 900);
+
+    .team-name, .team-score {
+      background-color: mat-color($peril-primary, 500);
+      padding: 0.5rem;
+    }
+
+    .team-name {
+      grid-area: name;
+      font-family: 'Dancing Script', cursive;
+      font-size: 4vmin;
+
+    }
+
+    .team-score {
+      grid-area: score;
+      font-size: 2vmin;
+
+    }
+  }
+
+}

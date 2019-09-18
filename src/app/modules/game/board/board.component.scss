@@ -1,7 +1,7 @@
 .game-board {
   height: 100vh;
   display: grid;
-  grid-template: "header" auto "board" 1fr "scores" auto
+  grid-template: "header" auto "board" 1fr "scores" max-content
   / auto;
 
   mat-toolbar {

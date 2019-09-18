@@ -2,6 +2,8 @@
 
 .game-board {
   font-size: 4vmin;
+  text-shadow: .1em .1em .1em mat-color($mat-grey, 900);
+
   --colNum: 6;
   margin-top: 1rem;
   display: grid;

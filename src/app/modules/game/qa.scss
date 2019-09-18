@@ -1,0 +1,14 @@
+@import 'theme';
+
+:host {
+  height: 100vh;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  padding: 3vmin;
+
+  font-size: 10vmin;
+  text-shadow: .1em .1em .1em mat-color($mat-grey, 900);
+
+  background-color: mat-color($peril-primary, 500);
+}

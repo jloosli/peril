@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
@@ -16,6 +16,10 @@ export class QuestionComponent implements OnInit {
 
   vm$: Observable<{ question: string, teams: Player[] }>;
 
+  @HostListener('click') onClick() {
+    this.router.navigate(['/game']);
+  }
+
   constructor(private route: ActivatedRoute, private router: Router, private questionsSvc: QuestionsService,
               private teamsSvc: PlayersService) {
   }
@@ -31,7 +35,4 @@ export class QuestionComponent implements OnInit {
     );
   }
 
-  backToGame() {
-    this.router.navigate(['/game']);
-  }
 }
