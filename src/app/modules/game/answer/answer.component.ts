@@ -27,6 +27,8 @@ export class AnswerComponent implements OnInit {
         const category = params.get('category');
         const index = params.get('idx');
         const answer = qanda[category][index].answer;
+        const question = qanda[category][index].question;
+        console.log(`%cQuestion: ${question}`, 'color:blue; font-size: x-large;');
         return {answer};
       }),
     );
