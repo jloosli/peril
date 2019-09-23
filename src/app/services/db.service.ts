@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import * as localForage from 'localforage';
 import {extendPrototype} from 'localforage-observable';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {filter, switchMap, tap} from 'rxjs/operators';
+import {filter, switchMap} from 'rxjs/operators';
 
 const localforage: LocalForageWithObservableMethods = extendPrototype(localForage);
 
@@ -21,9 +21,7 @@ export class DbService {
   obsKey<T = any>(key: string): Observable<T> {
     return this.ready$.pipe(
       filter(Boolean),
-      tap(x => console.log(x)),
       switchMap(() => localforage.getItemObservable<T>(key, {crossTabNotification: true}) as Observable<T>),
-      tap(x => console.log(x)),
     );
   }
 

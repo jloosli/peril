@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import * as Peer from 'peerjs';
 
 export enum ClientType {
   Main,
@@ -12,7 +13,11 @@ export enum ClientType {
 })
 export class RtcService {
 
+  peer = new Peer(null, {debug: 2});
+
   constructor() {
+    console.log('initialized');
+    console.log(this.peer.id);
   }
 
   private genId() {

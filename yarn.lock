@@ -949,6 +949,13 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.9.5.tgz#162b864bc70be077e6db212b322754917929e976"
   integrity sha512-jRHfWsvyMtXdbhnz5CVHxaBgnV6duZnPlQuRSo/dm/GnmikNcmZhxIES4E9OZjUmQ8C+HCl4KJux+cXN/ErGDQ==
 
+"@types/peerjs@^0.0.30":
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/@types/peerjs/-/peerjs-0.0.30.tgz#8b680258ceccf23e7bf01d6d9ca15fc5e96670fe"
+  integrity sha512-yaWnpWhbf6qV3bJFRK3NLY3oX34J7/JMAXYahRNLSeDODCC/pHxF/9wSc3GtpA9DQF7dpeejDPkCdUp9knxVHg==
+  dependencies:
+    "@types/webrtc" "*"
+
 "@types/q@^0.0.32":
   version "0.0.32"
   resolved "https://registry.yarnpkg.com/@types/q/-/q-0.0.32.tgz#bd284e57c84f1325da702babfc82a5328190c0c5"
@@ -973,7 +980,7 @@
     "@types/source-list-map" "*"
     source-map "^0.6.1"
 
-"@types/webrtc@^0.0.25":
+"@types/webrtc@*", "@types/webrtc@^0.0.25":
   version "0.0.25"
   resolved "https://registry.yarnpkg.com/@types/webrtc/-/webrtc-0.0.25.tgz#bd2b4e7b4c13250b3d58439623f2b9adfd7dee9e"
   integrity sha512-ep/e+p2uUKV1h96GBgRhwomrBch/bPDHPOKbCHODLGRUDuuKe2s7sErlFVKw+5BYUzvpxSmUNqoadaZ44MePoQ==

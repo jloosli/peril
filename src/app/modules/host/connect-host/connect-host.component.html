@@ -1,0 +1,7 @@
+<h1>Connect Host Phone</h1>
+<form (submit)="submitCode()" [formGroup]="hostForm">
+  <mat-form-field>
+    <input formControlName="code" matInput placeholder="Host Code"/>
+  </mat-form-field>
+  <button mat-button>Submit</button>
+</form>
