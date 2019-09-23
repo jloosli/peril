@@ -4730,7 +4730,15 @@ loader-utils@1.2.3, loader-utils@^1.0.1, loader-utils@^1.0.2, loader-utils@^1.1.
     emojis-list "^2.0.0"
     json5 "^1.0.1"
 
-localforage@^1.7.3:
+localforage-observable@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/localforage-observable/-/localforage-observable-2.0.0.tgz#ac8d38e7be283608b7afbd6727ddb91fff2236df"
+  integrity sha512-QZco9bV2XIJ7WU5Z+zJ7NT0xxN9J8BgHbJhdsA2k6OJGfR4jCBRoA/QiwQmKJhqX6TAFAjLN4sO3QEzNldVw0A==
+  dependencies:
+    localforage "^1.5.0"
+    zen-observable "^0.2.1"
+
+localforage@^1.5.0, localforage@^1.7.3:
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.7.3.tgz#0082b3ca9734679e1bd534995bdd3b24cf10f204"
   integrity sha512-1TulyYfc4udS7ECSBT2vwJksWbkwwTX8BzeUIiq8Y07Riy7bDAAnxDaPU/tWyOVmQAcWJIEIFP9lPfBGqVoPgQ==
@@ -7697,7 +7705,7 @@ utils-merge@1.0.1:
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-uuid@^3.0.0, uuid@^3.0.1, uuid@^3.3.2:
+uuid@^3.0.0, uuid@^3.0.1, uuid@^3.3.2, uuid@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
   integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
@@ -8102,6 +8110,11 @@ yn@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/yn/-/yn-2.0.0.tgz#e5adabc8acf408f6385fc76495684c88e6af689a"
   integrity sha1-5a2ryKz0CPY4X8dklWhMiOavaJo=
+
+zen-observable@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.2.1.tgz#c47676a64132b8475a61aa49e514755b5b9663f3"
+  integrity sha1-xHZ2pkEyuEdaYapJ5RR1W1uWY/M=
 
 zone.js@~0.9.1:
   version "0.9.1"

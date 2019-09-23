@@ -1,0 +1,18 @@
+<h1>Set Players</h1>
+
+
+<form (submit)="savePlayers()" [formGroup]="playersForm">
+  <div formArrayName="players">
+    <mat-form-field *ngFor="let player of playersCtrls.controls; let idx=index" [formGroupName]="idx">
+      <input [placeholder]="'Player '+ (idx+1)" formControlName="name" matInput>
+      <button (click)="removePlayer(idx)" *ngIf="playersCtrls.length > 1" aria-label="Clear" mat-button
+              matSuffix>
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <button (click)="addPlayer()" color="primary" mat-button type="button">Add Player</button>
+  <button color="primary" mat-button type="submit">Save Players</button>
+</form>
+
+
