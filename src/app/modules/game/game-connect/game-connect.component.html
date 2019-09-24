@@ -1,1 +1,7 @@
 <h1>Game Connect</h1>
+<div *ngIf="vm$ | async as vm">
+  Peer ID: {{vm.peerId}}
+
+  <a [href]="'/host?code='+vm.peerId" color="primary" mat-raised-button target="_blank">Host Link</a>
+  <app-qr [size]="100" [value]="'https://localhost:4200/host?code='+vm.peerId"></app-qr>
+</div>

@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {RtcService} from '@service/rtc.service';
+import {ClientType, RtcService} from '@service/rtc.service';
+import {combineLatest} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-game-connect',
@@ -8,10 +10,16 @@ import {RtcService} from '@service/rtc.service';
 })
 export class GameConnectComponent implements OnInit {
 
+  vm$: Observable<{ peerId: string }>;
+
   constructor(private rtcSvc: RtcService) {
+    this.rtcSvc.myType = ClientType.Main;
   }
 
   ngOnInit() {
+    this.vm$ = combineLatest([this.rtcSvc.peerId$]).pipe(
+      map(([peerId]) => ({peerId})),
+    );
   }
 
 }
