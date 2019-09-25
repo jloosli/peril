@@ -17,7 +17,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
   values = [100, 200, 300, 400, 500];
   destroyed$ = new Subject();
 
-  @ViewChild('gameBoard', {static: true}) private gb: ElementRef;
+  @ViewChild('gameBoard', {static: false}) private gb: ElementRef;
 
   constructor(private qandaSvc: QuestionsService, private router: Router) {
   }
