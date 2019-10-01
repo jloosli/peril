@@ -1,13 +1,14 @@
 <h1>Game Connect</h1>
 <div *ngIf="vm$ | async as vm">
   Peer ID: {{vm.peerId}}
-
-  <a [href]="formatLink('host',vm.peerId)" color="primary" mat-raised-button target="_blank">Host Link</a>
-  <app-qr [size]="100" [value]="formatLink('host',vm.peerId)"></app-qr>
+  <div *ngIf="vm.showHost" class="game-host">
+    <a [href]="formatLink('host',vm.peerId)" color="primary" mat-raised-button target="_blank">Host Link</a>
+    <app-qr [size]="100" [value]="formatLink('host',vm.peerId)"></app-qr>
+  </div>
   <div *ngFor="let player of vm.players">
-    <a [href]="formatLink('player',vm.peerId)" color="primary" mat-raised-button target="_blank">{{player.name}}
-      Link</a>
-    <app-qr [size]="100" [value]="formatLink('player',vm.peerId)"></app-qr>
+    <a [href]="formatLink('player',vm.peerId, player)"
+       color="primary" mat-raised-button target="_blank">{{player.name}} Link</a>
+    <app-qr [size]="100" [value]="formatLink('player',vm.peerId, player)"></app-qr>
   </div>
 
 </div>

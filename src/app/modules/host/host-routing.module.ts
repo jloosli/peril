@@ -4,7 +4,7 @@ import {ConnectHostComponent} from '@module/host/connect-host/connect-host.compo
 
 
 const routes: Routes = [
-  {path: '', component: ConnectHostComponent},
+  {path: 'connect', component: ConnectHostComponent},
 ];
 
 @NgModule({

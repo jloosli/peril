@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {ClientType, RtcService} from '@service/rtc/rtc.service';
+import {ClientType} from '@service/rtc/rtc.service';
 import {combineLatest} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {PlatformLocation} from '@angular/common';
 import {PlayersService} from '@service/players.service';
 import {Player} from '@interface/player';
+import {RtcBaseService} from '@service/rtc/rtc-base.service';
 
 @Component({
   selector: 'app-game-connect',
@@ -15,22 +16,22 @@ export class GameConnectComponent implements OnInit {
 
   vm$: Observable<{ peerId: string, players: Player[], showHost: boolean }>;
 
-  constructor(private rtcSvc: RtcService, private playersSvc: PlayersService, private location: PlatformLocation) {
+  constructor(private rtcSvc: RtcBaseService, private playersSvc: PlayersService, private platformLoc: PlatformLocation) {
     this.rtcSvc.setClientType(ClientType.Base);
-    console.log(location.location.origin);
   }
 
   ngOnInit() {
-    this.vm$ = combineLatest([this.rtcSvc.peerId$, this.rtcSvc.gameHost, this.playersSvc.players$]).pipe(
-      map(([peerId, players]) => ({peerId, players})),
+    this.vm$ = combineLatest([this.rtcSvc.peerId$, this.playersSvc.players$, this.rtcSvc.hostConnection$]).pipe(
+      map(([peerId, players, hostConnection]) => ({peerId, players, showHost: !Boolean(hostConnection)})),
     );
   }
 
-  formatLink(type: 'host' | 'player', peerId) {
-    let link = this.location.location.origin;
-    link += '/' + type;
-    link += '?code=' + peerId;
+  formatLink(type: 'host' | 'player', peerId: string, player?: Player) {
+    let link = (this.platformLoc as any).location.origin;
+    link += `/${type}/connect?code=${peerId}`;
+    if (player) {
+      link += `&playerId=${player.id}&playerName=${player.name}`;
+    }
     return link;
   }
-
 }

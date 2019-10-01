@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ClientType, RtcService} from '@service/rtc/rtc.service';
+import {ClientType} from '@service/rtc/rtc.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {filter, map} from 'rxjs/operators';
+import {RtcGameHostService} from '@service/rtc/rtc-game-host.service';
 
 @Component({
   selector: 'app-connect-host',
@@ -15,7 +16,7 @@ export class ConnectHostComponent implements OnInit {
     code: new FormControl('', Validators.required),
   });
 
-  constructor(private rtcSvc: RtcService, private route: ActivatedRoute) {
+  constructor(private rtcSvc: RtcGameHostService, private route: ActivatedRoute) {
     this.rtcSvc.setClientType(ClientType.GameHost);
   }
 
@@ -29,7 +30,7 @@ export class ConnectHostComponent implements OnInit {
   }
 
   submitCode() {
-    this.rtcSvc.join(this.hostForm.get('code').value, ClientType.GameHost);
+    this.rtcSvc.connect(this.hostForm.get('code').value, ClientType.GameHost);
   }
 
 }

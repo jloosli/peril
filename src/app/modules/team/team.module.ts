@@ -6,10 +6,11 @@ import {BuzzerComponent} from './buzzer/buzzer.component';
 import {WaitingComponent} from './waiting/waiting.component';
 import {WagerComponent} from './wager/wager.component';
 import {QuestionComponent} from './question/question.component';
+import {ConnectTeamComponent} from './connect-team/connect-team.component';
 
 
 @NgModule({
-  declarations: [BuzzerComponent, WaitingComponent, WagerComponent, QuestionComponent],
+  declarations: [BuzzerComponent, WaitingComponent, WagerComponent, QuestionComponent, ConnectTeamComponent],
   imports: [
     CommonModule,
     TeamRoutingModule,

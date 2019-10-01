@@ -35,6 +35,7 @@ export class RtcBaseService extends RtcService {
                 setTimeout(() => connection.close, 500);
               } else {
                 this._hostConnection$.next(connection);
+                connection.on('close', () => this._hostConnection$.next(null));
                 console.log('Connected to host!');
               }
               break;
@@ -52,5 +53,7 @@ export class RtcBaseService extends RtcService {
       }
 
     });
+
+
   }
 }
