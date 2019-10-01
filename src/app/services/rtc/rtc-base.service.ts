@@ -47,6 +47,10 @@ export class RtcBaseService extends RtcService {
               } else {
                 playerConnections[data.playerId] = connection;
                 this._playerConnections.next(playerConnections);
+                connection.on('close', () => {
+                  delete playerConnections[data.playerId];
+                  this._playerConnections.next(playerConnections);
+                });
               }
               break;
           }

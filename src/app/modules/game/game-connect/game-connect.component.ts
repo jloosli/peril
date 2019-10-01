@@ -14,15 +14,34 @@ import {RtcBaseService} from '@service/rtc/rtc-base.service';
 })
 export class GameConnectComponent implements OnInit {
 
-  vm$: Observable<{ peerId: string, players: Player[], showHost: boolean }>;
+  vm$: Observable<{ peerId: string, players: Player[], showHost: boolean, connections: string[] }>;
 
   constructor(private rtcSvc: RtcBaseService, private playersSvc: PlayersService, private platformLoc: PlatformLocation) {
     this.rtcSvc.setClientType(ClientType.Base);
   }
 
   ngOnInit() {
-    this.vm$ = combineLatest([this.rtcSvc.peerId$, this.playersSvc.players$, this.rtcSvc.hostConnection$]).pipe(
-      map(([peerId, players, hostConnection]) => ({peerId, players, showHost: !Boolean(hostConnection)})),
+    this.vm$ = combineLatest([
+      this.rtcSvc.peerId$,
+      this.playersSvc.players$,
+      this.rtcSvc.hostConnection$,
+      this.rtcSvc.playerConnections$,
+    ]).pipe(
+      map(([
+             peerId,
+             players,
+             hostConnection,
+             connections,
+           ]) => {
+        const connectedPlayerIds = Object.keys(connections);
+        return {
+          peerId,
+          players: players
+            .filter(player => !connectedPlayerIds.includes(player.id)),
+          showHost: !Boolean(hostConnection),
+          connections: Object.keys(connections),
+        };
+      }),
     );
   }
 
