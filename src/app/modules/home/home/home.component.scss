@@ -1,0 +1,25 @@
+:host {
+  display: grid;
+  grid-template: "main" 1fr "actions" 1fr
+  / auto;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+}
+
+.main {
+  grid-area: main;
+
+  h1 {
+    font-size: 20vmin;
+    text-align: center;
+  }
+}
+
+.actions {
+  grid-area: actions;
+  align-self: start;
+  display: flex;
+  justify-content: center;
+}

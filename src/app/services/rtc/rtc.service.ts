@@ -38,6 +38,9 @@ export abstract class RtcService {
   lastPeerId: string;
 
   peer = new Peer(null, {debug: 2});
+  // peer$: Observable<Peer> = new Observable((sub) => {
+  //
+  // });
 
   protected constructor() {
     this.init();
