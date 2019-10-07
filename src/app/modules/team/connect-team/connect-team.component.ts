@@ -26,6 +26,7 @@ export class ConnectTeamComponent implements OnInit {
       filter((params: ParamMap) => ['code', 'playerId', 'playerName'].every(key => params.has(key))),
       tap((params: ParamMap) => this.teamForm.get('code').setValue(params.get('code'))),
       map((params: ParamMap) => ({playerId: params.get('playerId'), playerName: params.get('playerName')})),
+      tap(({playerId}) => this.submitCode(playerId)),
     );
   }
 

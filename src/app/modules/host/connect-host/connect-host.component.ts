@@ -26,6 +26,7 @@ export class ConnectHostComponent implements OnInit {
       map((params: ParamMap) => params.get('code')),
     ).subscribe(code => {
       this.hostForm.get('code').setValue(code);
+      this.submitCode();
     });
   }
 
