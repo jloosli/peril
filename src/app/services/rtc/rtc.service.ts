@@ -59,7 +59,7 @@ export abstract class RtcService {
 
   connect(id, clientType: ClientType, playerId?: string): Peer.DataConnection {
     const connection = this.peer.connect(id, {
-      reliable: true,
+      metadata: {clientType},
     });
     connection.on('open', () => {
       console.log(`Connected to: ${connection.peer}`);
