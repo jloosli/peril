@@ -7,6 +7,7 @@ const routes: Routes = [
   {path: 'settings', loadChildren: () => import('./modules/settings/settings.module').then(mod => mod.SettingsModule)},
   {path: 'host', loadChildren: () => import('./modules/host/host.module').then(mod => mod.HostModule)},
   {path: 'player', loadChildren: () => import('./modules/team/team.module').then(mod => mod.TeamModule)},
+  {path: 'connect', loadChildren: () => import('./modules/connection/connection.module').then(mod => mod.ConnectionModule)},
   {path: '', loadChildren: () => import('./modules/home/home.module').then(mod => mod.HomeModule)},
   {path: '**', redirectTo: '', pathMatch: 'full'},
 ];

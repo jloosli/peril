@@ -1,31 +1,33 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ClientType} from '@service/rtc/rtc.service';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
+import {ClientType} from '@service/rtc/rtc.service';
 import {filter, map, take, tap} from 'rxjs/operators';
-import {RtcGameHostService} from '@service/rtc/rtc-game-host.service';
+import {RtcClientService} from '@service/rtc/rtc-client.service';
 
 @Component({
-  selector: 'app-connect-host',
-  templateUrl: './connect-host.component.html',
-  styleUrls: ['./connect-host.component.scss'],
+  selector: 'app-connect',
+  templateUrl: './connect.component.html',
+  styleUrls: ['./connect.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ConnectHostComponent implements OnInit {
+export class ConnectComponent implements OnInit {
 
-  hostForm = new FormGroup({
+  codeForm = new FormGroup({
     code: new FormControl('', Validators.required),
   });
 
-  constructor(private rtcSvc: RtcGameHostService, private route: ActivatedRoute, private router: Router) {
+  constructor(private rtcSvc: RtcClientService, private route: ActivatedRoute, private router: Router) {
     this.rtcSvc.setClientType(ClientType.GameHost);
   }
 
   ngOnInit() {
-    this.route.queryParamMap.pipe(
+    this.route.paramMap.pipe(
+      tap(x => console.log(x)),
       filter((params: ParamMap) => params.has('code')),
       map((params: ParamMap) => params.get('code')),
     ).subscribe(code => {
-      this.hostForm.get('code').setValue(code);
+      this.codeForm.get('code').setValue(code);
       this.submitCode();
     });
 
@@ -39,7 +41,7 @@ export class ConnectHostComponent implements OnInit {
   }
 
   submitCode() {
-    this.rtcSvc.connect(this.hostForm.get('code').value, ClientType.GameHost);
+    this.rtcSvc.connect(this.codeForm.get('code').value, ClientType.GameHost);
   }
 
 }

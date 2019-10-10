@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import Peer from 'peerjs';
-import {BehaviorSubject, ReplaySubject} from 'rxjs';
+import {BehaviorSubject, ReplaySubject, Subject} from 'rxjs';
 import {shareReplay} from 'rxjs/operators';
 
 export enum ClientType {
@@ -37,12 +37,14 @@ export abstract class RtcService {
   peerId$ = new BehaviorSubject<string>(null);
   lastPeerId: string;
 
-  peer = new Peer(null, {debug: 2});
-  // peer$: Observable<Peer> = new Observable((sub) => {
-  //
-  // });
+  peer: Peer;
+  protected _data$ = new Subject<RTCMessage>();
+  data$ = this._data$.asObservable();
+  protected _baseConnection$ = new BehaviorSubject<Peer.DataConnection>(null);
+  baseConnection$ = this._baseConnection$.asObservable();
 
-  protected constructor() {
+  protected constructor(id?: string) {
+    this.peer = new Peer(id, {debug: 2});
     this.init();
   }
 
@@ -59,7 +61,7 @@ export abstract class RtcService {
 
   connect(id, clientType: ClientType, playerId?: string): Peer.DataConnection {
     const connection = this.peer.connect(id, {
-      metadata: {clientType},
+      metadata: {clientType, playerId},
     });
     connection.on('open', () => {
       console.log(`Connected to: ${connection.peer}`);
@@ -71,6 +73,7 @@ export abstract class RtcService {
     });
     connection.on('data', (data) => {
       console.log('Received: ', data);
+      this._data$.next(data);
     });
     connection.on('close', () => {
       console.log('Closed Connection');

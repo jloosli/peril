@@ -16,7 +16,7 @@ export class RtcBaseService extends RtcService {
 
 
   constructor() {
-    super();
+    super('abcd');
     this.setClientType(ClientType.Base);
   }
 
@@ -26,6 +26,7 @@ export class RtcBaseService extends RtcService {
     });
     connection.on('data', (data: RTCMessage) => {
       console.log('Received:', data);
+      this._data$.next(data);
       switch (data.eventType) {
         case EventType.Init:
           switch (data.clientType) {
