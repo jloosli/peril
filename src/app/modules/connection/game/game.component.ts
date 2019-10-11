@@ -48,10 +48,11 @@ export class GameComponent implements OnInit {
 
   formatLink(type: 'host' | 'player', peerId: string, player?: Player) {
     let link = (this.platformLoc as any).location.origin;
-    link += `/connect/${type}/${peerId}`;
+    link += `/connect/${type}`;
     if (player) {
       link += `;playerId=${player.id};playerName=${player.name}`;
     }
+    link += `/${peerId}`;
     return link;
   }
 
