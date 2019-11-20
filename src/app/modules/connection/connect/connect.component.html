@@ -1,1 +1,7 @@
-<p>connect works!</p>
+<ng-container *ngIf="vm$ | async as vm">
+  <h2>Connecting {{vm.type}}</h2>
+
+  <pre>
+    {{vm | json}}
+  </pre>
+</ng-container>

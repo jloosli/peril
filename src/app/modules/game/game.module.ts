@@ -9,12 +9,11 @@ import {MaterialDesignModule} from '@module/material-design.module';
 import {ScoreComponent} from './score/score.component';
 import {GridComponent} from './grid/grid.component';
 import {StartComponent} from './start/start.component';
-import {GameConnectComponent} from './game-connect/game-connect.component';
 import {QrModule} from '@module/shared/qr/qr.module';
 
 
 @NgModule({
-  declarations: [BoardComponent, AnswerComponent, QuestionComponent, ScoreComponent, GridComponent, StartComponent, GameConnectComponent],
+  declarations: [BoardComponent, AnswerComponent, QuestionComponent, ScoreComponent, GridComponent, StartComponent],
   imports: [
     CommonModule,
     MaterialDesignModule,

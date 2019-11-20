@@ -1,6 +1,5 @@
 <h1>Set Players</h1>
 
-
 <form (submit)="savePlayers()" [formGroup]="playersForm">
   <div formArrayName="players">
     <mat-form-field *ngFor="let player of playersCtrls.controls; let idx=index" [formGroupName]="idx">

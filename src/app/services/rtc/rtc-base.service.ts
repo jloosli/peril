@@ -1,62 +1,66 @@
-import {Injectable} from '@angular/core';
-import {ClientType, EventType, RTCMessage, RtcService} from '@service/rtc/rtc.service';
-import {BehaviorSubject} from 'rxjs';
+import {Inject, Injectable, InjectionToken} from '@angular/core';
+import {ClientType, EventType, PEER_SERVICE, RTCMessage, RtcService} from '@service/rtc/rtc.service';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import Peer from 'peerjs';
+import {map, tap} from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class RtcBaseService extends RtcService {
 
-  private _playerConnections = new BehaviorSubject<{ [id: string]: Peer.DataConnection }>({});
-  playerConnections$ = this._playerConnections.asObservable();
+  private _clientData$ = new Subject<{ connection: Peer.DataConnection, message: RTCMessage }>();
+  clientData$=this._clientData$.asObservable();
 
-  private _hostConnection$ = new BehaviorSubject<Peer.DataConnection>(null);
-  hostConnection$ = this._hostConnection$.asObservable();
+  private _connections$ = new BehaviorSubject<{ [id: string]: Peer.DataConnection }>({});
+  connections$ = this._connections$.asObservable();
+
+  hostConnection$: Observable<Peer.DataConnection | undefined> = this.connections$.pipe(
+    map(connections => {
+      const hostConnectionId = Object.keys(connections).find(id => connections[id].metadata.clientType === ClientType.GameHost);
+      return hostConnectionId ? connections[hostConnectionId] : undefined;
+    }),
+  );
+
+  playerConnections$: Observable<Peer.DataConnection[]> = this.connections$.pipe(
+    map(connections => {
+      return Object.keys(connections).filter(id => connections[id].metadata.clientType === ClientType.Player)
+        .map(id => connections[id]);
+    }),
+  );
 
 
-  constructor() {
-    super('abcd');
+  constructor(@Inject(PEER_SERVICE) protected peer: Peer) {
+    super(peer);
     this.setClientType(ClientType.Base);
+    this.peerEvents.connection$.pipe(
+      tap(x => console.log(x)),
+    ).subscribe(conn => this.setUpDataConnection(conn));
   }
 
-  ready(connection: Peer.DataConnection) {
+  setUpDataConnection(connection: Peer.DataConnection) {
+    this.send({
+      message: 'I see you from the base in setUpDatConnection',
+    }, connection);
     connection.on('open', () => {
-      console.log(`Opened connection to:  ${connection.peer}`);
+      console.log(`Opened connection to:  ${connection.peer} as ${connection.metadata.clientType}`);
+      const connections = {...this._connections$.getValue()};
+      connections[connection.peer] = connection;
+      this._connections$.next(connections);
+      this.send({
+        message: 'I see you from the base [open]',
+      }, connection);
     });
-    connection.on('data', (data: RTCMessage) => {
-      console.log('Received:', data);
-      this._data$.next(data);
-      switch (data.eventType) {
-        case EventType.Init:
-          switch (data.clientType) {
-            case ClientType.GameHost:
-              if (this._hostConnection$.getValue()) {
-                this.send({eventType: EventType.Error, message: 'Already connected to a host'}, connection);
-                setTimeout(() => connection.close, 500);
-              } else {
-                this._hostConnection$.next(connection);
-                connection.on('close', () => this._hostConnection$.next(null));
-                console.log('Connected to host!');
-              }
-              break;
-            case ClientType.Player:
-              const playerConnections = this._playerConnections.getValue();
-              if (playerConnections[data.playerId]) {
-                this.send({eventType: EventType.Error, message: 'Already connected to this player'}, connection);
-                setTimeout(() => connection.close, 500);
-              } else {
-                playerConnections[data.playerId] = connection;
-                this._playerConnections.next(playerConnections);
-                connection.on('close', () => {
-                  delete playerConnections[data.playerId];
-                  this._playerConnections.next(playerConnections);
-                });
-              }
-              break;
-          }
-      }
-
+    connection.on('close', () => {
+      console.log(`Closed connection to:  ${connection.peer} as ${connection.metadata.clientType}`);
+      const connections = {...this._connections$.getValue()};
+      delete connections[connection.peer];
+      this._connections$.next(connections);
+    });
+    connection.on('data', (message: RTCMessage) => {
+      console.log('Received:', message, connection.metadata);
+      this._clientData$.next({connection, message});
     });
 
 

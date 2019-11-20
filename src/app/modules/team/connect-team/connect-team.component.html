@@ -1,9 +1,0 @@
-<div *ngIf="vm$ | async as vm">
-  <h1>Connect {{vm.playerName}} Phone</h1>
-  <form (submit)="submitCode(vm.playerId)" [formGroup]="teamForm">
-    <mat-form-field>
-      <input formControlName="code" matInput placeholder="Host Code"/>
-    </mat-form-field>
-    <button mat-button>Connect</button>
-  </form>
-</div>

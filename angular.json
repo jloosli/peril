@@ -130,6 +130,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "peril"
+    }
+  },
+  "defaultProject": "peril",
+  "cli": {
+    "analytics": "ebe48e0e-4eff-425d-8e3d-7c81d5a8ee98"
+  }
 }

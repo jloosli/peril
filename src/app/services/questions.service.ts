@@ -16,12 +16,12 @@ export class QuestionsService {
     {id: 'c', name: 'Old Testament'},
     {id: 'd', name: 'The New Dispensation'},
     {id: 'e', name: 'Grab Bag'},
-  ]);
+  ]).asObservable();
   answersAndQuestions$ = new BehaviorSubject<QuestionList>({
     a: [
       {answer: 'This Book of Mormon Prophet Taught the Sacrament Prayers', question: 'Who was Moroni?', twiceToday: false},
       {answer: 'He became the new king after the death of his father wicked King Noah', question: 'Who was Limhi?', twiceToday: false},
-      {answer: 'This Jaradite prophet witnessed the entire destruction of his people.', question: 'Who was Ether?', twiceToday: false},
+      {answer: 'This Jaredite prophet witnessed the entire destruction of his people.', question: 'Who was Ether?', twiceToday: false},
       {answer: 'This man was the prophet at the time Lehi left Jerusalem', question: 'Who was Jeremiah?', twiceToday: false},
       {answer: 'They were the four sons of Mosiah the king.', question: 'Who were Ammon, Aaron, Omner and Himni?', twiceToday: false},
     ],
@@ -105,13 +105,13 @@ export class QuestionsService {
       },
       {answer: 'This LDS gymnast won 2 medals in the 1984 olympics', question: 'Who is Peter Vidmar?', twiceToday: false},
     ],
-  });
+  }).asObservable();
 
   finalPeril$ = new BehaviorSubject({
     category: 'Scriptural Villains',
     answer: 'This evil Gadianton leader was hanged on a tree by the Nephites til dead.',
     question: 'Who was Zemnarihah?',
-  });
+  }).asObservable();
 
   constructor() {
   }

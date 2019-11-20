@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable, InjectionToken} from '@angular/core';
 import Peer from 'peerjs';
-import {BehaviorSubject, ReplaySubject, Subject} from 'rxjs';
-import {shareReplay} from 'rxjs/operators';
+import {BehaviorSubject, merge, of, ReplaySubject, Subject, zip} from 'rxjs';
+import {delay, map, shareReplay, take, tap} from 'rxjs/operators';
 
 export enum ClientType {
-  Base,
-  Player,
-  GameHost
+  Base = 'base',
+  Player = 'player',
+  GameHost = 'host'
 }
 
 export enum EventType {
@@ -18,11 +18,16 @@ export enum EventType {
 }
 
 export interface RTCMessage {
-  eventType: EventType;
+  eventType?: EventType;
   clientType?: ClientType;
   playerId?: string;
   message?: string;
 }
+
+export const PEER_SERVICE = new InjectionToken<Peer>('Peer.js service', {
+  providedIn: 'root',
+  factory: () => new Peer(null, {debug: 2, secure: true}),
+});
 
 
 @Injectable({
@@ -30,26 +35,53 @@ export interface RTCMessage {
 })
 export abstract class RtcService {
 
+
+
   private _myType = new ReplaySubject<ClientType>();
   myType$ = this._myType.pipe(
     shareReplay({bufferSize: 1, refCount: true}),
   );
-  peerId$ = new BehaviorSubject<string>(null);
-  lastPeerId: string;
 
-  peer: Peer;
-  protected _data$ = new Subject<RTCMessage>();
-  data$ = this._data$.asObservable();
-  protected _baseConnection$ = new BehaviorSubject<Peer.DataConnection>(null);
-  baseConnection$ = this._baseConnection$.asObservable();
+  private _id$ = new ReplaySubject<string>();
+  id$ = this._id$.asObservable();
 
-  protected constructor(id?: string) {
-    this.peer = new Peer(id, {debug: 2});
+  protected _peerEvents = {
+    open$: new Subject<void>(),
+    connection$: new ReplaySubject<Peer.DataConnection>(),
+    close$: new Subject<void>(),
+    disconnected$: new Subject<void>(),
+    error$: new ReplaySubject<any>(),
+  };
+
+  peerEvents = {
+    open$: this._peerEvents.open$.asObservable(),
+    connection$: this._peerEvents.connection$.asObservable(),
+    close$: this._peerEvents.close$.asObservable(),
+    disconnected$: this._peerEvents.disconnected$.asObservable(),
+    error$: this._peerEvents.error$.asObservable(),
+  };
+
+
+  protected constructor(@Inject(PEER_SERVICE) protected peer: Peer) {
     this.init();
+    const events$ = Object.keys(this.peerEvents).map(evt => zip(...[of(evt), this.peerEvents[evt]]));
+    merge(...events$)
+      .subscribe(([eventType, result]) => {
+        console.log(eventType, result);
+      });
   }
 
-  // Each type needs to implement a ready method to handle interactions
-  abstract ready(connection: Peer.DataConnection);
+  private init() {
+    this.peer.on('open', () => {
+      this._peerEvents.open$.next();
+      this._id$.next(this.peer.id);
+    });
+    this.peer.on('connection', (conn) => this._peerEvents.connection$.next(conn));
+    this.peer.on('disconnected', () => this._peerEvents.disconnected$.next());
+    this.peer.on('close', () => this._peerEvents.close$.next());
+    this.peer.on('error', (err) => this._peerEvents.error$.next(err));
+
+  }
 
   setClientType(clientType: ClientType) {
     this._myType.next(clientType);
@@ -58,60 +90,4 @@ export abstract class RtcService {
   send(message: RTCMessage, connection: Peer.DataConnection) {
     connection.send(message);
   }
-
-  connect(id, clientType: ClientType, playerId?: string): Peer.DataConnection {
-    const connection = this.peer.connect(id, {
-      metadata: {clientType, playerId},
-    });
-    connection.on('open', () => {
-      console.log(`Connected to: ${connection.peer}`);
-      const initialMessage: RTCMessage = {clientType, eventType: EventType.Init};
-      if (playerId) {
-        initialMessage.playerId = playerId;
-      }
-      connection.send(initialMessage);
-    });
-    connection.on('data', (data) => {
-      console.log('Received: ', data);
-      this._data$.next(data);
-    });
-    connection.on('close', () => {
-      console.log('Closed Connection');
-    });
-    return connection;
-  }
-
-  private init() {
-    this.peer.on('open', (id) => {
-      // Workaround for peer.reconnect deleting previous id
-      if (this.peer.id === null) {
-        console.log('Received null id from peer open');
-        this.peer.id = this.lastPeerId;
-      } else {
-        this.lastPeerId = this.peer.id;
-      }
-      console.log('ID: ' + this.peer.id);
-      this.peerId$.next(this.peer.id);
-      console.log('Awaiting connection...');
-    });
-
-    this.peer.on('connection', (c) => {
-      console.log(`connected to: ${c.peer}`);
-      this.ready(c);
-    });
-
-    this.peer.on('disconnected', () => {
-      console.log('disconnected');
-    });
-
-    this.peer.on('close', () => {
-      console.log('Connection destroyed');
-    });
-
-    this.peer.on('error', (err) => {
-      console.error(err);
-    });
-  }
-
-
 }

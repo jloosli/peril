@@ -4,8 +4,8 @@ import {RtcBaseService} from '@service/rtc/rtc-base.service';
 import {PlayersService} from '@service/players.service';
 import {PlatformLocation} from '@angular/common';
 import {ClientType} from '@service/rtc/rtc.service';
-import {combineLatest} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {combineLatest, Observable} from 'rxjs';
+import {map, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-game',
@@ -23,24 +23,24 @@ export class GameComponent implements OnInit {
 
   ngOnInit() {
     this.vm$ = combineLatest([
-      this.rtcSvc.peerId$,
-      this.playersSvc.players$,
-      this.rtcSvc.hostConnection$,
-      this.rtcSvc.playerConnections$,
+      this.playersSvc.players$.pipe(tap(x => console.log(x))),
+      this.rtcSvc.hostConnection$.pipe(tap(x => console.log(x))),
+      this.rtcSvc.playerConnections$.pipe(tap(x => console.log(x))),
+      this.rtcSvc.id$.pipe(tap(x => console.log(x))),
     ]).pipe(
       map(([
-             peerId,
              players,
              hostConnection,
-             connections,
+             playerConnections,
+             id,
            ]) => {
-        const connectedPlayerIds = Object.keys(connections);
+        const connectedPlayerIds = playerConnections.map(connection => connection.metadata.playerId);
         return {
-          peerId,
+          peerId: id,
           players: players
             .filter(player => !connectedPlayerIds.includes(player.id)),
           showHost: !Boolean(hostConnection),
-          connections: Object.keys(connections),
+          connections: connectedPlayerIds,
         };
       }),
     );
@@ -48,11 +48,10 @@ export class GameComponent implements OnInit {
 
   formatLink(type: 'host' | 'player', peerId: string, player?: Player) {
     let link = (this.platformLoc as any).location.origin;
-    link += `/connect/${type}`;
+    link += `/connect/${type}/${peerId}`;
     if (player) {
       link += `;playerId=${player.id};playerName=${player.name}`;
     }
-    link += `/${peerId}`;
     return link;
   }
 
