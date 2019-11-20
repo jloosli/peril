@@ -35,12 +35,8 @@ export const PEER_SERVICE = new InjectionToken<Peer>('Peer.js service', {
 })
 export abstract class RtcService {
 
-
-
-  private _myType = new ReplaySubject<ClientType>();
-  myType$ = this._myType.pipe(
-    shareReplay({bufferSize: 1, refCount: true}),
-  );
+  private _myType = new ReplaySubject<ClientType>(1);
+  myType$ = this._myType;
 
   private _id$ = new ReplaySubject<string>();
   id$ = this._id$.asObservable();

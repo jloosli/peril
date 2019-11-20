@@ -1,11 +1,11 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {Player} from '@interface/player';
 import {RtcBaseService} from '@service/rtc/rtc-base.service';
 import {PlayersService} from '@service/players.service';
 import {PlatformLocation} from '@angular/common';
 import {ClientType} from '@service/rtc/rtc.service';
 import {combineLatest, Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {map, takeWhile, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-game',
@@ -13,9 +13,10 @@ import {map, tap} from 'rxjs/operators';
   styleUrls: ['./game.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
 
   vm$: Observable<{ peerId: string, players: Player[], showHost: boolean, connections: string[] }>;
+  active = true;
 
   constructor(private rtcSvc: RtcBaseService, private playersSvc: PlayersService, private platformLoc: PlatformLocation) {
     this.rtcSvc.setClientType(ClientType.Base);
@@ -23,10 +24,10 @@ export class GameComponent implements OnInit {
 
   ngOnInit() {
     this.vm$ = combineLatest([
-      this.playersSvc.players$.pipe(tap(x => console.log(x))),
-      this.rtcSvc.hostConnection$.pipe(tap(x => console.log(x))),
-      this.rtcSvc.playerConnections$.pipe(tap(x => console.log(x))),
-      this.rtcSvc.id$.pipe(tap(x => console.log(x))),
+      this.playersSvc.players$,
+      this.rtcSvc.hostConnection$,
+      this.rtcSvc.playerConnections$,
+      this.rtcSvc.id$,
     ]).pipe(
       map(([
              players,
@@ -44,6 +45,11 @@ export class GameComponent implements OnInit {
         };
       }),
     );
+
+  }
+
+  ngOnDestroy(): void {
+    this.active = false;
   }
 
   formatLink(type: 'host' | 'player', peerId: string, player?: Player) {
