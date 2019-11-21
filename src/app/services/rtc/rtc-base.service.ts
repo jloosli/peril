@@ -13,6 +13,9 @@ export class RtcBaseService extends RtcService {
 
   private _clientData$ = new Subject<{ connection: Peer.DataConnection, message: RTCMessage }>();
   clientData$ = this._clientData$.asObservable();
+  buzz$ = this.clientData$.pipe(
+    filter(msg => msg.message.eventType === EventType.Buzz),
+  );
 
   private _connections$ = new BehaviorSubject<{ [id: string]: Peer.DataConnection }>({});
   connections$ = this._connections$.asObservable();

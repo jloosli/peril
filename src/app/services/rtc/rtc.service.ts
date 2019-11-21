@@ -11,16 +11,15 @@ export enum ClientType {
 
 export enum EventType {
   Init,
-  Error,
+  Buzz,
   IsAnswer,
   Locked,
-  Selection
+  Selection,
+  Message
 }
 
 export interface RTCMessage {
-  eventType?: EventType;
-  clientType?: ClientType;
-  playerId?: string;
+  eventType: EventType;
   message?: string;
 }
 

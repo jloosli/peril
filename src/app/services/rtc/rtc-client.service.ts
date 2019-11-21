@@ -1,5 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-import {ClientType, EventType, PEER_SERVICE, RTCMessage, RtcService} from '@service/rtc/rtc.service';
+import {EventType, PEER_SERVICE, RTCMessage, RtcService} from '@service/rtc/rtc.service';
 import Peer from 'peerjs';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {map, take, tap} from 'rxjs/operators';
@@ -24,8 +24,9 @@ export class RtcClientService extends RtcService {
         console.log('Opened Data connection to base');
         this._baseConnection$.next(connection);
         this.send({
+          eventType: EventType.Message,
           message: 'I see you from the client',
-        }, connection);
+        });
       },
     );
     connection.on('close', () => {
@@ -49,5 +50,9 @@ export class RtcClientService extends RtcService {
       }),
       tap(connection => this.setUpDataConnection(connection)),
     ).toPromise();
+  }
+
+  send(message: RTCMessage) {
+    super.send(message, this._baseConnection$.getValue());
   }
 }

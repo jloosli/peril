@@ -1,10 +1,10 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {WaitingHostComponent} from '@module/host/waiting-host/waiting-host.component';
+import {HostComponent} from '@module/host/host/host.component';
 
 
 const routes: Routes = [
-  {path: 'waiting', component: WaitingHostComponent},
+  {path: '', component: HostComponent},
 ];
 
 @NgModule({
