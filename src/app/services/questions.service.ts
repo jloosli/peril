@@ -113,6 +113,19 @@ export class QuestionsService {
     question: 'Who was Zemnarihah?',
   }).asObservable();
 
+  private _answered$ = new BehaviorSubject<{ [id: string]: Set<number> }>({});
+  answered$ = this._answered$.asObservable();
+
   constructor() {
   }
+
+  remove(id, idx) {
+    const answered = {...this._answered$.getValue()};
+    if (!(id in answered)) {
+      answered[id] = new Set();
+    }
+    answered[id].add(idx);
+    this._answered$.next(answered);
+  }
+
 }

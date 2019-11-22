@@ -16,7 +16,7 @@ const routes: Routes = [
     loadChildren: () => import('./modules/team/team.module').then(mod => mod.TeamModule),
     canActivate: [ConnectedToGameService],
   },
-  {path: 'connect', loadChildren: () => import('./modules/connection/connection.module').then(mod => mod.ConnectionModule)},
+  // {path: 'connect', loadChildren: () => import('./modules/connection/connection.module').then(mod => mod.ConnectionModule)},
   {path: '', loadChildren: () => import('./modules/home/home.module').then(mod => mod.HomeModule)},
   {path: '**', redirectTo: '', pathMatch: 'full'},
 ];

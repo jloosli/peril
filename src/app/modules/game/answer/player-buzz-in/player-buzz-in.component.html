@@ -1,0 +1,9 @@
+<mat-list>
+<mat-list-item class="answering">Answering: {{player.name}}</mat-list-item>
+  <mat-list-item class="actions">
+    <div matLine >
+      <button mat-raised-button color="warn" (click)="result(false)">Wrong</button>
+      <button mat-raised-button color="primary" (click)="result(true)">Correct</button>
+    </div>
+  </mat-list-item>
+</mat-list>

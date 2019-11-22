@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {QuestionsService} from '@service/questions.service';
 import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {RtcBaseService} from '@service/rtc/rtc-base.service';
 
 @Component({
   selector: 'app-board',

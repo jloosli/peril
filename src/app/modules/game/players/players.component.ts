@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {PlayersService} from '@service/players.service';
 import {take, tap} from 'rxjs/operators';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -8,13 +8,14 @@ import {ActivatedRoute, Router} from '@angular/router';
   selector: 'app-teams',
   templateUrl: './players.component.html',
   styleUrls: ['./players.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayersComponent implements OnInit {
 
   playersForm: FormGroup;
 
   constructor(private playersSvc: PlayersService, private fb: FormBuilder, private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute, private cdr: ChangeDetectorRef) {
   }
 
   get playersCtrls() {
@@ -30,7 +31,7 @@ export class PlayersComponent implements OnInit {
             name: [player.name || '', Validators.required],
           }));
         });
-
+        this.cdr.markForCheck();
       });
 
   }
@@ -53,7 +54,7 @@ export class PlayersComponent implements OnInit {
     const players = this.playersCtrls.value;
     console.log(players);
     this.playersSvc.setPlayers(players)
-      .then(() => this.router.navigate(['/connect/game'], {relativeTo: this.route}));
+      .then(() => this.router.navigate(['/game/connect']));
   }
 
 }

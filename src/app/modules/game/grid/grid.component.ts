@@ -13,7 +13,7 @@ import {Router} from '@angular/router';
 })
 export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  vm$: Observable<{ questions: QuestionList, categories: Category[] }>;
+  vm$: Observable<{ questions: QuestionList, categories: Category[], answered: { [id: string]: Set<number> } }>;
   values = [100, 200, 300, 400, 500];
   destroyed$ = new Subject();
 
@@ -23,16 +23,23 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.vm$ = combineLatest([this.qandaSvc.answersAndQuestions$, this.qandaSvc.categories$, this.qandaSvc.gameState$]).pipe(
+    this.vm$ = combineLatest([
+      this.qandaSvc.answersAndQuestions$,
+      this.qandaSvc.categories$,
+      this.qandaSvc.gameState$,
+      this.qandaSvc.answered$,
+    ]).pipe(
       tap(([, , state]) => {
         if (state === 'double') {
           this.values = this.values.map(x => x * 2);
         }
       }),
-      map(([questions, categories, gameState]: [QuestionList, Category[], 'single' | 'double' | 'final']) => ({
+      map(([questions, categories, gameState, answered]:
+             [QuestionList, Category[], 'single' | 'double' | 'final', any]) => ({
         questions,
         categories,
         gameState,
+        answered,
       })),
     );
   }
@@ -47,8 +54,11 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
     this.destroyed$.next();
   }
 
-  goToAnswer(category, idx) {
-    this.router.navigate(['game', category, idx]);
+  goToAnswer(category: string, idx: number, amount: number) {
+    this.router.navigate(['game', category, idx, amount]);
   }
 
+  isAnswered(category: string, idx: number, answered: { [id: string]: Set<number> }): boolean {
+    return category in answered && answered[category].has(idx);
+  }
 }

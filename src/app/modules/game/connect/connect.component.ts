@@ -13,7 +13,7 @@ import {map, takeWhile, tap} from 'rxjs/operators';
   styleUrls: ['./game.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GameComponent implements OnInit, OnDestroy {
+export class ConnectComponent implements OnInit, OnDestroy {
 
   vm$: Observable<{ peerId: string, players: Player[], showHost: boolean, connections: string[] }>;
   active = true;

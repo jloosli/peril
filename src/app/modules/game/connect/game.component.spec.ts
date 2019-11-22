@@ -1,11 +1,11 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {GameComponent} from './game.component';
 import {Component, Input} from '@angular/core';
 import {RtcBaseService} from '@service/rtc/rtc-base.service';
 import {PlayersService} from '@service/players.service';
 import {PlatformLocation} from '@angular/common';
 import {of} from 'rxjs';
+import {ConnectComponent} from '@module/game/connect/connect.component';
 
 @Component({selector: 'app-qr', template: ''})
 export class AppQrStubComponent {
@@ -28,13 +28,13 @@ const PlatformLocationStub = {
   },
 };
 
-describe('GameComponent', () => {
-  let component: GameComponent;
-  let fixture: ComponentFixture<GameComponent>;
+describe('ConnectComponent', () => {
+  let component: ConnectComponent;
+  let fixture: ComponentFixture<ConnectComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [GameComponent, AppQrStubComponent],
+      declarations: [ConnectComponent, AppQrStubComponent],
       providers: [
         {provide: RtcBaseService, useValue: RtcBaseServiceStub},
         {provide: PlayersService, useValue: PlayersServiceStub},
@@ -45,7 +45,7 @@ describe('GameComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GameComponent);
+    fixture = TestBed.createComponent(ConnectComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
