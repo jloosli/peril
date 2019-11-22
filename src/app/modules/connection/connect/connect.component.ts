@@ -41,7 +41,7 @@ export class ConnectComponent implements OnInit {
       filter(Boolean),
       take(1),
     ).subscribe(() => {
-      this.router.navigate(['../../waiting'], {relativeTo: this.route});
+      this.router.navigate(['../../waiting'], {relativeTo: this.route, preserveFragment: true, queryParamsHandling: 'merge'});
     });
   }
 

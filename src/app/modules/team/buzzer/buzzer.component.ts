@@ -13,6 +13,7 @@ export class BuzzerComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.rtcClientSvc.data$.subscribe(x => console.log(x));
   }
 
   buzz() {

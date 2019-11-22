@@ -1,4 +1,4 @@
-import {Inject, Injectable, InjectionToken} from '@angular/core';
+import {inject, Inject, Injectable, InjectionToken} from '@angular/core';
 import Peer from 'peerjs';
 import {BehaviorSubject, merge, of, ReplaySubject, Subject, zip} from 'rxjs';
 import {delay, map, shareReplay, take, tap} from 'rxjs/operators';
@@ -23,9 +23,21 @@ export interface RTCMessage {
   message?: string;
 }
 
-export const PEER_SERVICE = new InjectionToken<Peer>('Peer.js service', {
+export const PEER_SERVICE_WITH_ID = new InjectionToken<Peer>('Peer.js service', {
   providedIn: 'root',
-  factory: () => new Peer(null, {debug: 2, secure: true}),
+  factory: () => {
+    return new Peer(inject(GAME_ID), {debug: 2, secure: true});
+  },
+});
+
+export const GAME_ID = new InjectionToken<string>('Host Peer ID', {
+  providedIn: 'root',
+  factory: () => 'abc',
+});
+
+export const PEER_SERVICE_AUTO_ID = new InjectionToken<Peer>('Peer.js service with auto generated id', {
+  providedIn: 'root',
+  factory: () => new Peer(undefined, {debug: 2, secure: true}),
 });
 
 
@@ -57,7 +69,7 @@ export abstract class RtcService {
   };
 
 
-  protected constructor(@Inject(PEER_SERVICE) protected peer: Peer) {
+  protected constructor(@Inject(PEER_SERVICE_WITH_ID) protected peer: Peer) {
     this.init();
     const events$ = Object.keys(this.peerEvents).map(evt => zip(...[of(evt), this.peerEvents[evt]]));
     merge(...events$)

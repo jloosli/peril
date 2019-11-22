@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Player} from '@interface/player';
-import {map, shareReplay, switchMap, take} from 'rxjs/operators';
+import {map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {DbService} from '@service/db.service';
 import * as uuidv4 from 'uuid/v4';
@@ -74,4 +74,5 @@ export class PlayersService {
   clearPlayers() {
     return this.dbSvc.setItem<Player[]>(PlayersService.PLAYERS_KEY, []);
   }
+
 }

@@ -2,7 +2,7 @@ import {TestBed} from '@angular/core/testing';
 
 import {RtcBaseService} from './rtc-base.service';
 import Peer from 'peerjs';
-import {PEER_SERVICE} from '@service/rtc/rtc.service';
+import {PEER_SERVICE_WITH_ID} from '@service/rtc/rtc.service';
 import {of} from 'rxjs';
 import {PlayersService} from '@service/players.service';
 
@@ -19,7 +19,7 @@ describe('RtcBaseService', () => {
   });
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
-      {provide: PEER_SERVICE, useValue: peerStub},
+      {provide: PEER_SERVICE_WITH_ID, useValue: peerStub},
       {provide: PlayersService, useValue: playersServiceStub},
     ],
   }));

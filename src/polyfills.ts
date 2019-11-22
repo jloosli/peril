@@ -62,3 +62,5 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
  * APPLICATION IMPORTS
  */
 (window as any).global = window;
+// tslint:disable-next-line:prefer-const
+let parcelRequire;

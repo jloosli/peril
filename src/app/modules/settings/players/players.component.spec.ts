@@ -1,6 +1,8 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {PlayersComponent} from './players.component';
+import {MaterialDesignModule} from '@module/material-design.module';
+import {ReactiveFormsModule} from '@angular/forms';
 
 describe('TeamsComponent', () => {
   let component: PlayersComponent;
@@ -9,6 +11,7 @@ describe('TeamsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [PlayersComponent],
+      imports: [MaterialDesignModule, ReactiveFormsModule],
     })
       .compileComponents();
   }));

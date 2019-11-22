@@ -3,7 +3,7 @@ import {Player} from '@interface/player';
 import {RtcBaseService} from '@service/rtc/rtc-base.service';
 import {PlayersService} from '@service/players.service';
 import {PlatformLocation} from '@angular/common';
-import {ClientType} from '@service/rtc/rtc.service';
+import {ClientType, GAME_ID} from '@service/rtc/rtc.service';
 import {combineLatest, Observable} from 'rxjs';
 import {map, takeWhile, tap} from 'rxjs/operators';
 
@@ -54,7 +54,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   formatLink(type: 'host' | 'player', peerId: string, player?: Player) {
     let link = (this.platformLoc as any).location.origin;
-    link += `/connect/${type}/${peerId}`;
+    link += `/${type};gameId=${peerId}`;
     if (player) {
       link += `;playerId=${player.id};playerName=${player.name}`;
     }

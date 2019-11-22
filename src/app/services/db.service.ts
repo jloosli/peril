@@ -43,7 +43,7 @@ export class DbService {
 
   private init() {
     console.log('I ran init (should only happen once)');
-    localforage.newObservable.factory = <T>(subscribeFn: SubscriberFunction<T>): Observable<T> => Observable.create(subscribeFn);
+    localforage.newObservable.factory = <T>(subscribeFn: SubscriberFunction<T>): Observable<T> => new Observable<T>(subscribeFn);
     localforage.ready().then(() => this.ready$.next(true));
   }
 

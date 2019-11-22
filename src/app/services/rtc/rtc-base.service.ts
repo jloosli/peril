@@ -1,8 +1,8 @@
-import {Inject, Injectable} from '@angular/core';
-import {ClientType, EventType, PEER_SERVICE, RTCMessage, RtcService} from '@service/rtc/rtc.service';
+import {Inject, Injectable, InjectionToken} from '@angular/core';
+import {ClientType, EventType, PEER_SERVICE_WITH_ID, RTCMessage, RtcService} from '@service/rtc/rtc.service';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import Peer from 'peerjs';
-import {filter, map, take} from 'rxjs/operators';
+import {distinctUntilChanged, filter, map, take} from 'rxjs/operators';
 import {PlayersService} from '@service/players.service';
 
 
@@ -38,10 +38,11 @@ export class RtcBaseService extends RtcService {
     map(([players, playerConnections, host]) => {
       return Boolean(host) && players.length === playerConnections.length;
     }),
+    distinctUntilChanged(),
   );
 
 
-  constructor(@Inject(PEER_SERVICE) protected peer: Peer, private playersSvc: PlayersService) {
+  constructor(@Inject(PEER_SERVICE_WITH_ID) protected peer: Peer, private playersSvc: PlayersService) {
     super(peer);
     this.setClientType(ClientType.Base);
     this.peerEvents.connection$.subscribe(conn => this.setUpDataConnection(conn));

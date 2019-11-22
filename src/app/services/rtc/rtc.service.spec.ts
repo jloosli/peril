@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 import Peer from 'peerjs';
-import {ClientType, PEER_SERVICE, RtcService} from './rtc.service';
+import {ClientType, PEER_SERVICE_WITH_ID, RtcService} from './rtc.service';
 import Mock = jest.Mock;
 import DoneCallback = jest.DoneCallback;
 
@@ -14,7 +14,7 @@ describe('RtcService', () => {
   });
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
-      {provide: PEER_SERVICE, useValue: peerStub},
+      {provide: PEER_SERVICE_WITH_ID, useValue: peerStub},
     ],
   }));
 

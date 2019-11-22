@@ -1,8 +1,8 @@
 import {Inject, Injectable} from '@angular/core';
-import {EventType, PEER_SERVICE, RTCMessage, RtcService} from '@service/rtc/rtc.service';
+import {EventType, GAME_ID, PEER_SERVICE_AUTO_ID, PEER_SERVICE_WITH_ID, RTCMessage, RtcService} from '@service/rtc/rtc.service';
 import Peer from 'peerjs';
-import {BehaviorSubject, Subject} from 'rxjs';
-import {map, take, tap} from 'rxjs/operators';
+import {BehaviorSubject, of, Subject} from 'rxjs';
+import {catchError, map, take, tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,7 @@ export class RtcClientService extends RtcService {
   protected _baseConnection$ = new BehaviorSubject<Peer.DataConnection | undefined>(null);
   baseConnection$ = this._baseConnection$.asObservable();
 
-  constructor(@Inject(PEER_SERVICE) protected peer: Peer) {
+  constructor(@Inject(PEER_SERVICE_AUTO_ID) protected peer: Peer, @Inject(GAME_ID) protected gameID: string) {
     super(peer);
   }
 
@@ -44,11 +44,20 @@ export class RtcClientService extends RtcService {
     return this.myType$.pipe(
       take(1),
       map(clientType => {
-        return this.peer.connect(id, {
+        return this.peer.connect(this.gameID || id, {
           metadata: {clientType, playerId},
         });
       }),
-      tap(connection => this.setUpDataConnection(connection)),
+      tap(connection => {
+        // if (!connection.open) {
+        //   throw new Error('Connection not opened');
+        // }
+        this.setUpDataConnection(connection);
+      }),
+      // catchError((err, caught) => {
+      //   console.error(err);
+      //   return caught;
+      // }),
     ).toPromise();
   }
 
