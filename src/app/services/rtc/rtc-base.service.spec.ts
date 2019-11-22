@@ -25,7 +25,7 @@ describe('RtcBaseService', () => {
   }));
 
   it('should be created', () => {
-    const service: RtcBaseService = TestBed.get(RtcBaseService);
+    const service: RtcBaseService = TestBed.inject(RtcBaseService);
     expect(service).toBeTruthy();
   });
 });

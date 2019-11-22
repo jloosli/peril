@@ -19,17 +19,17 @@ describe('RtcService', () => {
   }));
 
   it('should be created', () => {
-    const service: RtcService = TestBed.get(RtcService);
+    const service: RtcService = TestBed.inject(RtcService);
     expect(service).toBeTruthy();
   });
 
   it('should call on 5 times', () => {
-    const service: RtcService = TestBed.get(RtcService);
+    const service: RtcService = TestBed.inject(RtcService);
     expect((peerStub.on as Mock).mock.calls.length).toBe(5);
   });
 
   it('should emit the correct client type', (done: DoneCallback) => {
-    const service: RtcService = TestBed.get(RtcService);
+    const service: RtcService = TestBed.inject(RtcService);
     service.myType$.subscribe(type => {
       expect(type).toBe(ClientType.GameHost);
       done();

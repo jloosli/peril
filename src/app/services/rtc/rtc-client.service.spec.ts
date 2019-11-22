@@ -6,7 +6,7 @@ describe('RtcClientService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: RtcClientService = TestBed.get(RtcClientService);
+    const service: RtcClientService = TestBed.inject(RtcClientService);
     expect(service).toBeTruthy();
   });
 });
