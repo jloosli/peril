@@ -13,13 +13,15 @@ import {GameComponent} from './game/game.component';
 import {PlayersComponent} from '@module/game/players/players.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {ConnectComponent} from '@module/game/connect/connect.component';
-import { PlayerBuzzInComponent } from './answer/player-buzz-in/player-buzz-in.component';
+import {PlayerBuzzInComponent} from './answer/player-buzz-in/player-buzz-in.component';
+import {PlayerConnectComponent} from './connect/player-connect/player-connect.component';
 
 
 @NgModule({
   declarations: [BoardComponent, AnswerComponent, QuestionComponent, ScoreComponent, GridComponent, GameComponent, PlayersComponent,
     ConnectComponent,
-    PlayerBuzzInComponent],
+    PlayerBuzzInComponent,
+    PlayerConnectComponent],
   imports: [
     CommonModule,
     MaterialDesignModule,

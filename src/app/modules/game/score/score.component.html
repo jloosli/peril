@@ -1,5 +1,9 @@
 <div *ngIf="vm$ | async as vm" class="scores">
-  <div *ngFor="let team of vm.teams" class="scorecard">
-    <div class="team-name">{{team.name}}</div>
-    <div class="team-score">{{team.score | currency:'USD':'symbol':'1.0-0'}}</div>
+  <div *ngFor="let player of vm.players" class="scorecard">
+    <div class="team-name">{{player.name}}
+      <app-player-connect *ngIf="!player.connected" [clientType]="'player'" [peerId]="'abc'" [player]="player"
+                          showButton="true"></app-player-connect>
+    </div>
+    <div class="team-score">{{player.score | currency:'USD':'symbol':'1.0-0'}}</div>
   </div>
+</div>
