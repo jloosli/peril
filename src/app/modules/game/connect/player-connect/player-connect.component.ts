@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {Player} from '@interface/player';
 import {PlatformLocation} from '@angular/common';
+import {ClientType} from '@service/rtc/rtc.service';
 
 @Component({
   selector: 'app-player-connect',
@@ -12,7 +13,7 @@ export class PlayerConnectComponent implements OnInit {
 
   @Input() peerId: string;
   @Input() player: Player;
-  @Input() clientType: ClientTypes;
+  @Input() clientType: ClientType;
   @Input() showButton: false;
 
   constructor(private platformLoc: PlatformLocation) {
