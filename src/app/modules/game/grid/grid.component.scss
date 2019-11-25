@@ -5,7 +5,7 @@
   text-shadow: .1em .1em .1em mat-color($mat-grey, 900);
 
   --colNum: 6;
-  margin-top: 1rem;
+  //margin-top: 1rem;
   display: grid;
   grid-template-columns: repeat(var(--colNum), [col-start] 1fr);
   grid-template-rows: [category-start] 1fr [category-end] repeat(5, [row-start] 1fr);
