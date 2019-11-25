@@ -2,7 +2,7 @@ import {Component, HostListener, OnInit} from '@angular/core';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {QuestionsService} from '@service/questions.service';
 import {combineLatest, Observable, of, zip} from 'rxjs';
-import {filter, map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {map, switchMap, take, withLatestFrom} from 'rxjs/operators';
 import {QuestionList} from '@interface/question';
 import {RtcBaseService} from '@service/rtc/rtc-base.service';
 import {MatBottomSheet} from '@angular/material';
@@ -28,7 +28,10 @@ export class AnswerComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private router: Router, private questionsSvc: QuestionsService,
               private rtcSvc: RtcBaseService, private sheet: MatBottomSheet, private playersSvc: PlayersService) {
-    combineLatest([this.rtcSvc.buzz$, this.playersSvc.players$.pipe(take(1))]).pipe(
+
+    // combineLatest([this.rtcSvc.buzz$, this.playersSvc.players$.pipe(take(1))])
+    this.rtcSvc.buzz$.pipe(
+      withLatestFrom(this.playersSvc.players$),
       take(1),
       map(([{connection}, players]) => {
         return players.find(player => player.id === connection.metadata.playerId);

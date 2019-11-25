@@ -1,10 +1,10 @@
 <div #gameBoard *ngIf="vm$ | async as vm" class="game-board">
   <div *ngFor="let category of vm.categories; index as i" class="category-name">{{category.name}}</div>
-  <ng-container *ngFor="let value of values">
+  <ng-container *ngFor="let value of values; index as j">
     <ng-container *ngFor="let category of vm.categories; index as i">
-      <div (click)="goToAnswer(category.id, i, value)" *ngIf="!isAnswered(category.id, i, vm.answered)"
+      <div (click)="goToAnswer(category.id, i, value)" *ngIf="!isAnswered(category.id, j, vm.answered)"
            class="clue">{{value}}</div>
-      <div class="clue" *ngIf="isAnswered(category.id, i, vm.answered)"></div>
+      <div *ngIf="isAnswered(category.id, j, vm.answered)" class="clue"></div>
     </ng-container>
   </ng-container>
 </div>
