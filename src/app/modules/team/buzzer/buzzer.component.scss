@@ -3,3 +3,11 @@
   place-content: center;
   height: 100%;
 }
+
+button.full-size {
+  width: 90vw;
+  height: 90vh;
+  font-size: 15vmin;
+  white-space: normal;
+  line-height: inherit;
+}

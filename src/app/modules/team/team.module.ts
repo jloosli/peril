@@ -7,10 +7,11 @@ import {WagerComponent} from './wager/wager.component';
 import {QuestionComponent} from './question/question.component';
 import {MaterialDesignModule} from '@module/material-design.module';
 import {ReactiveFormsModule} from '@angular/forms';
+import {TeamComponent} from './team/team.component';
 
 
 @NgModule({
-  declarations: [BuzzerComponent, WagerComponent, QuestionComponent],
+  declarations: [BuzzerComponent, WagerComponent, QuestionComponent, TeamComponent],
   imports: [
     CommonModule,
     MaterialDesignModule,

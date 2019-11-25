@@ -16,7 +16,7 @@ export class ConnectedToGameService implements CanActivate {
     this.clientSvc.setClientType(type);
     const gameId = route.paramMap.get('gameId');
     const playerId = route.paramMap.get('playerId') || undefined;
-    const playerName = route.paramMap.get('playerName') || undefined || 'Bobby wagner';
+    const playerName = route.paramMap.get('playerName') || undefined;
     return this.clientSvc.connect(gameId, playerId).then(Boolean);
   }
 }

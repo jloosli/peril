@@ -14,7 +14,7 @@ const routes: Routes = [
   {
     path: 'player',
     loadChildren: () => import('./modules/team/team.module').then(mod => mod.TeamModule),
-    canActivate: [ConnectedToGameService],
+    canActivate: [],
   },
   // {path: 'connect', loadChildren: () => import('./modules/connection/connection.module').then(mod => mod.ConnectionModule)},
   {path: '', loadChildren: () => import('./modules/home/home.module').then(mod => mod.HomeModule)},

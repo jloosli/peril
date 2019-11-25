@@ -3,14 +3,14 @@ import {Player} from '@interface/player';
 import {RtcBaseService} from '@service/rtc/rtc-base.service';
 import {PlayersService} from '@service/players.service';
 import {PlatformLocation} from '@angular/common';
-import {ClientType, GAME_ID} from '@service/rtc/rtc.service';
+import {ClientType} from '@service/rtc/rtc.service';
 import {combineLatest, Observable} from 'rxjs';
-import {map, takeWhile, tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-game',
-  templateUrl: './game.component.html',
-  styleUrls: ['./game.component.scss'],
+  templateUrl: './connect.component.html',
+  styleUrls: ['./connect.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConnectComponent implements OnInit, OnDestroy {
@@ -40,7 +40,7 @@ export class ConnectComponent implements OnInit, OnDestroy {
           peerId: id,
           players: players
             .filter(player => !connectedPlayerIds.includes(player.id)),
-          showHost: !Boolean(hostConnection),
+          showHost: false, // !Boolean(hostConnection),
           connections: connectedPlayerIds,
         };
       }),
