@@ -1,10 +1,5 @@
 <div class="heading"><h1>Game Connect</h1></div>
 <div *ngIf="vm$ | async as vm" class="connections">
-  <div *ngIf="vm.showHost && vm.peerId" class="game-host">
-    <h2>Host</h2>
-    <a [href]="formatLink('host',vm.peerId)" color="primary" mat-raised-button target="_blank">Host Link</a>
-    <app-qr [size]="100" [value]="formatLink('host',vm.peerId)"></app-qr>
-  </div>
   <div *ngIf="vm.players.length && vm.peerId" class="game-players">
     <h2>Players</h2>
     <app-player-connect *ngFor="let player of vm.players" [peerId]="vm.peerId" [player]="player" clientType="player"
