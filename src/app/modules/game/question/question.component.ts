@@ -17,7 +17,7 @@ export class QuestionComponent implements OnInit {
   vm$: Observable<{ question: string, teams: Player[] }>;
 
   @HostListener('click') onClick() {
-    this.router.navigate(['/game']);
+    this.router.navigate(['../../../..'], {relativeTo: this.route});
   }
 
   constructor(private route: ActivatedRoute, private router: Router, private questionsSvc: QuestionsService,

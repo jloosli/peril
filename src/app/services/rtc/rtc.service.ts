@@ -1,7 +1,7 @@
 import {inject, Injectable, InjectionToken} from '@angular/core';
 import Peer from 'peerjs';
 import {BehaviorSubject, Observable, ReplaySubject, Subject} from 'rxjs';
-import {distinctUntilChanged, shareReplay} from 'rxjs/operators';
+import {distinctUntilChanged, shareReplay, tap} from 'rxjs/operators';
 import {PeerHash} from '@service/rtc/peer-hash';
 
 export enum ClientType {
@@ -81,7 +81,8 @@ export abstract class RtcService {
       return true;
     }),
     shareReplay({bufferSize: 1, refCount: true}),
-  ) as Observable<{ [id: string]: Peer.DataConnection }>;
+    tap((conn: PeerHash) => this.addRemoveDataListeners(conn)),
+  ) as Observable<PeerHash>;
   peerNewConnection$: Observable<Peer.DataConnection> = new Observable(sub => {
     const newConnectionHandler = (conn) => sub.next(conn);
     this.peer.on('connection', newConnectionHandler);
