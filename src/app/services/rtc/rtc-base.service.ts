@@ -1,51 +1,49 @@
-import {Inject, Injectable, InjectionToken} from '@angular/core';
-import {ClientType, EventType, PEER_SERVICE_WITH_ID, RTCMessage, RtcService} from '@service/rtc/rtc.service';
-import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {ClientType, EventType, RTCMessage, RtcService} from '@service/rtc/rtc.service';
+import {combineLatest, Observable} from 'rxjs';
 import Peer from 'peerjs';
-import {distinctUntilChanged, filter, map, take} from 'rxjs/operators';
+import {distinctUntilChanged, filter, map, take, tap} from 'rxjs/operators';
 import {PlayersService} from '@service/players.service';
+import {PeerHash} from '@service/rtc/peer-hash';
 
+
+const filterClientType = (searchedClientType: ClientType) => map((connections: PeerHash) => {
+  return Object.keys(connections).filter(id =>
+    connections[id]
+    && connections[id].metadata
+    && connections[id].metadata.clientType
+    && connections[id].metadata.clientType === searchedClientType)
+    .map(id => connections[id]);
+});
 
 @Injectable({
   providedIn: 'root',
 })
 export class RtcBaseService extends RtcService {
-
-  private _clientData$ = new Subject<{ connection: Peer.DataConnection, message: RTCMessage }>();
-  clientData$ = this._clientData$.asObservable();
   buzz$ = this.clientData$.pipe(
     filter(msg => msg.message.eventType === EventType.Buzz),
   );
-
-  private _connections$ = new BehaviorSubject<{ [id: string]: Peer.DataConnection }>({});
-  connections$ = this._connections$.asObservable();
-
-  hostConnection$: Observable<Peer.DataConnection | undefined> = this.connections$.pipe(
-    map(connections => {
-      const hostConnectionId = Object.keys(connections).find(id => connections[id].metadata.clientType === ClientType.GameHost);
-      return hostConnectionId ? connections[hostConnectionId] : undefined;
-    }),
+  hostConnection$: Observable<Peer.DataConnection | undefined> = this.peerConnections$.pipe(
+    filterClientType(ClientType.GameHost),
+    map(connections => connections.length === 1 ? connections[0] : undefined),
   );
 
-  playerConnections$: Observable<Peer.DataConnection[]> = this.connections$.pipe(
-    map(connections => {
-      return Object.keys(connections).filter(id => connections[id].metadata.clientType === ClientType.Player)
-        .map(id => connections[id]);
-    }),
+  playerConnections$: Observable<Peer.DataConnection[]> = this.peerConnections$.pipe(
+    tap(connections => console.log(connections)),
+    filterClientType(ClientType.Player),
   );
 
-  allConnected$ = combineLatest([this.playersSvc.players$, this.playerConnections$, this.hostConnection$]).pipe(
-    map(([players, playerConnections, host]) => {
-      return Boolean(host) && players.length === playerConnections.length;
+  allConnected$ = combineLatest([this.playersSvc.players$, this.playerConnections$]).pipe(
+    map(([players, playerConnections]) => {
+      return players.length === playerConnections.length;
     }),
     distinctUntilChanged(),
   );
 
 
-  constructor(@Inject(PEER_SERVICE_WITH_ID) protected peer: Peer, private playersSvc: PlayersService) {
-    super(peer);
+  constructor(private playersSvc: PlayersService) {
+    super();
     this.setClientType(ClientType.Base);
-    this.peerEvents.connection$.subscribe(conn => this.setUpDataConnection(conn));
 
     this.allConnected$
       .pipe(
@@ -54,28 +52,8 @@ export class RtcBaseService extends RtcService {
       .subscribe(() => this.sendToAll({eventType: EventType.Init}));
   }
 
-  setUpDataConnection(connection: Peer.DataConnection) {
-    connection.on('open', () => {
-      console.log(`Opened connection to:  ${connection.peer} as ${connection.metadata.clientType}`);
-      const connections = {...this._connections$.getValue()};
-      connections[connection.peer] = connection;
-      this._connections$.next(connections);
-    });
-    connection.on('close', () => {
-      console.log(`Closed connection to:  ${connection.peer} as ${connection.metadata.clientType}`);
-      const connections = {...this._connections$.getValue()};
-      delete connections[connection.peer];
-      this._connections$.next(connections);
-    });
-    connection.on('data', (message: RTCMessage) => {
-      console.log('Received:', message, connection.metadata);
-      this._clientData$.next({connection, message});
-    });
-    connection.on('error', (err) => console.error(err));
-  }
-
   sendToAll(message: RTCMessage) {
-    this.connections$.pipe(
+    this.peerConnections$.pipe(
       take(1),
     ).subscribe(connections => {
       Object.keys(connections).forEach(id => {

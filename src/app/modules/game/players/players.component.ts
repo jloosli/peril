@@ -54,7 +54,7 @@ export class PlayersComponent implements OnInit {
     const players = this.playersCtrls.value;
     console.log(players);
     this.playersSvc.setPlayers(players)
-      .then(() => this.router.navigate(['/game/connect']));
+      .then(() => this.router.navigate(['../../connect'], {relativeTo: this.route}));
   }
 
 }

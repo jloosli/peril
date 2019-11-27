@@ -5,8 +5,8 @@
     <app-player-connect *ngFor="let player of vm.players" [peerId]="vm.peerId" [player]="player" clientType="player"
                         showButton="true"></app-player-connect>
   </div>
-  <div *ngIf="!vm.showHost && !vm.players.length" class="actions">
-    <button color="primary" mat-raised-button routerLink="/game">Ready to play!</button>
+  <div *ngIf="!vm.players.length" class="actions">
+    <button color="primary" mat-raised-button routerLink="..">Ready to play!</button>
   </div>
   <pre>
     {{ vm | json}}

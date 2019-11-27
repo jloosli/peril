@@ -1,8 +1,8 @@
 import {Inject, Injectable} from '@angular/core';
-import {EventType, GAME_ID, PEER_SERVICE_AUTO_ID, PEER_SERVICE_WITH_ID, RTCMessage, RtcService} from '@service/rtc/rtc.service';
+import {EventType, GAME_ID, RTCMessage, RtcService} from '@service/rtc/rtc.service';
 import Peer from 'peerjs';
-import {BehaviorSubject, of, Subject} from 'rxjs';
-import {catchError, map, take, tap} from 'rxjs/operators';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {map, take, tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -15,18 +15,18 @@ export class RtcClientService extends RtcService {
   protected _baseConnection$ = new BehaviorSubject<Peer.DataConnection | undefined>(null);
   baseConnection$ = this._baseConnection$.asObservable();
 
-  constructor(@Inject(PEER_SERVICE_AUTO_ID) protected peer: Peer, @Inject(GAME_ID) protected gameID: string) {
-    super(peer);
+  constructor(@Inject(GAME_ID) protected gameID: string) {
+    super();
   }
 
   setUpDataConnection(connection: Peer.DataConnection) {
     connection.on('open', () => {
-        console.log('Opened Data connection to base');
-        this._baseConnection$.next(connection);
-        this.send({
-          eventType: EventType.Message,
-          message: 'I see you from the client',
-        });
+      console.log('Opened Data connection to base');
+      this._baseConnection$.next(connection);
+      this.send({
+        eventType: EventType.Message,
+        message: 'I see you from the client',
+      });
       },
     );
     connection.on('close', () => {

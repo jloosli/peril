@@ -4,7 +4,7 @@ import {QuestionList} from '@interface/question';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {Category} from '@interface/category';
 import {map, takeUntil, tap} from 'rxjs/operators';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-grid',
@@ -19,7 +19,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('gameBoard', {static: false}) private gb: ElementRef;
 
-  constructor(private qandaSvc: QuestionsService, private router: Router) {
+  constructor(private qandaSvc: QuestionsService, private router: Router, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -55,7 +55,7 @@ export class GridComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   goToAnswer(category: string, idx: number, amount: number) {
-    this.router.navigate(['game', category, idx, amount]);
+    this.router.navigate([category, idx, amount], {relativeTo: this.route});
   }
 
   isAnswered(category: string, idx: number, answered: { [id: string]: Set<number> }): boolean {

@@ -1,7 +1,8 @@
-import {inject, Inject, Injectable, InjectionToken} from '@angular/core';
+import {inject, Injectable, InjectionToken} from '@angular/core';
 import Peer from 'peerjs';
-import {BehaviorSubject, merge, of, ReplaySubject, Subject, zip} from 'rxjs';
-import {delay, map, shareReplay, take, tap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, ReplaySubject, Subject} from 'rxjs';
+import {distinctUntilChanged, shareReplay} from 'rxjs/operators';
+import {PeerHash} from '@service/rtc/peer-hash';
 
 export enum ClientType {
   Base = 'base',
@@ -23,6 +24,7 @@ export interface RTCMessage {
   message?: string;
 }
 
+// @todo: Maybe use this? https://medium.com/@michelestieven/angular-writing-configurable-modules-69e6ea23ea42
 export const PEER_SERVICE_WITH_ID = new InjectionToken<Peer>('Peer.js service', {
   providedIn: 'root',
   factory: () => {
@@ -49,52 +51,106 @@ export abstract class RtcService {
   private _myType = new ReplaySubject<ClientType>(1);
   myType$ = this._myType;
 
-  private _id$ = new ReplaySubject<string>();
-  id$ = this._id$.asObservable();
+  peerOpen$: Observable<void> = new Observable(sub => {
+    const openHandler = () => sub.next();
+    this.peer.on('open', openHandler);
+    return () => this.peer.off('open', openHandler);
+  });
+  peerConnections$: Observable<PeerHash> = new Observable(sub => {
+    const connectionHandler = () => {
+      const connections = this.peer.connections;
+      const cleanedConnections = {};
+      Object.keys(connections).forEach(id => cleanedConnections[id] = connections[id][0]);
+      sub.next(cleanedConnections);
+    };
+    connectionHandler();
+    this.peer.on('connection', connectionHandler);
+    return () => this.peer.off('connection', connectionHandler);
+  }).pipe(
+    distinctUntilChanged((prev, curr) => {
+      const prevSet = new Set(Object.keys(prev));
+      const currSet = new Set(Object.keys(curr));
+      if (prevSet.size !== currSet.size) {
+        return false;
+      }
+      for (const p of prevSet) {
+        if (!currSet.has(p)) {
+          return false;
+        }
+      }
+      return true;
+    }),
+    shareReplay({bufferSize: 1, refCount: true}),
+  ) as Observable<{ [id: string]: Peer.DataConnection }>;
+  peerNewConnection$: Observable<Peer.DataConnection> = new Observable(sub => {
+    const newConnectionHandler = (conn) => sub.next(conn);
+    this.peer.on('connection', newConnectionHandler);
+    return () => this.peer.off('connection', newConnectionHandler);
+  });
+  peerClose$: Observable<void> = new Observable(sub => {
+    const closeHandler = () => sub.next();
+    this.peer.on('close', closeHandler);
+    return () => this.peer.off('close', closeHandler);
+  });
+  peerDisconnected$: Observable<void> = new Observable(sub => {
+    const disconnectedHandler = () => sub.next();
+    this.peer.on('disconnected', disconnectedHandler);
+    return () => this.peer.off('disconnected', disconnectedHandler);
+  });
+  peerError$: Observable<any> = new Observable(sub => {
+    const errorHandler = (err) => sub.next(err);
+    this.peer.on('error', errorHandler);
+    return () => this.peer.off('error', errorHandler);
+  });
+  private _id$ = new BehaviorSubject<string | undefined>(undefined);
+  id$ = this._id$.asObservable().pipe(distinctUntilChanged());
+  private _clientData$ = new Subject<{ connection: Peer.DataConnection, message: RTCMessage }>();
+  clientData$ = this._clientData$.asObservable();
+  private subscribedPeerIds = new Set<string>();
 
-  protected _peerEvents = {
-    open$: new Subject<void>(),
-    connection$: new ReplaySubject<Peer.DataConnection>(),
-    close$: new Subject<void>(),
-    disconnected$: new Subject<void>(),
-    error$: new ReplaySubject<any>(),
-  };
-
-  peerEvents = {
-    open$: this._peerEvents.open$.asObservable(),
-    connection$: this._peerEvents.connection$.asObservable(),
-    close$: this._peerEvents.close$.asObservable(),
-    disconnected$: this._peerEvents.disconnected$.asObservable(),
-    error$: this._peerEvents.error$.asObservable(),
-  };
-
-
-  protected constructor(@Inject(PEER_SERVICE_WITH_ID) protected peer: Peer) {
-    this.init();
-    const events$ = Object.keys(this.peerEvents).map(evt => zip(...[of(evt), this.peerEvents[evt]]));
-    merge(...events$)
-      .subscribe(([eventType, result]) => {
-        console.log(eventType, result);
-      });
+  protected constructor() {
+    const isGame = /^\/game/.test(window.location.pathname);
+    if (isGame) {
+      const parts = window.location.pathname.split('/');
+      if (parts.length > 2) {
+        const gameId = parts[2];
+        this._id$.next(gameId);
+      }
+    }
   }
 
-  private init() {
-    this.peer.on('open', () => {
-      this._peerEvents.open$.next();
-      this._id$.next(this.peer.id);
-    });
-    this.peer.on('connection', (conn) => this._peerEvents.connection$.next(conn));
-    this.peer.on('disconnected', () => this._peerEvents.disconnected$.next());
-    this.peer.on('close', () => this._peerEvents.close$.next());
-    this.peer.on('error', (err) => this._peerEvents.error$.next(err));
+  protected _peer: Peer;
 
+  protected get peer(): Peer {
+    if (!this._peer) {
+      this._peer = new Peer(this._id$.getValue(), {debug: 2});
+    }
+    return this._peer;
+  }
+
+  send(message: RTCMessage, connection: Peer.DataConnection,
+  ) {
+    connection.send(message);
   }
 
   setClientType(clientType: ClientType) {
     this._myType.next(clientType);
   }
 
-  send(message: RTCMessage, connection: Peer.DataConnection) {
-    connection.send(message);
+  private addRemoveDataListeners(connections: PeerHash) {
+    Object.keys(connections).forEach(id => {
+      connections[id].on('data', (data => this._clientData$.next({
+        connection: connections[id],
+        message: data,
+      })));
+      connections[id].on('close', () => this.subscribedPeerIds.delete(id));
+    });
+    // Remove missing connections
+    for (const id in this.subscribedPeerIds) {
+      if (!(id in connections)) {
+        console.warn('Found some loose connections');
+        this.subscribedPeerIds.delete(id);
+      }
+    }
   }
 }

@@ -12,6 +12,8 @@
         "destination": "/index.html"
       }
     ],
-    "predeploy": "ng build"
+    "predeploy": [
+      "npm run build"
+    ]
   }
 }

@@ -1,9 +1,10 @@
 <mat-list>
-<mat-list-item class="answering">Answering: {{player.name}}</mat-list-item>
+  <mat-list-item *ngIf="!answered" class="answering">Answering: {{player.name}}</mat-list-item>
+  <mat-list-item *ngIf="answered" class="correct-incorrect">{{answerMessage}}</mat-list-item>
   <mat-list-item class="actions">
-    <div matLine >
-      <button mat-raised-button color="warn" (click)="result(false)">Wrong</button>
-      <button mat-raised-button color="primary" (click)="result(true)">Correct</button>
+    <div matLine>
+      <button (click)="answer(false)" color="warn" mat-raised-button>Wrong</button>
+      <button (click)="answer(true)" color="primary" mat-raised-button>Correct</button>
     </div>
   </mat-list-item>
 </mat-list>

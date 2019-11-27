@@ -1,5 +1,7 @@
 <div class="main"><h1 class="game-title">PERIL!</h1></div>
 <div class="actions">
-  <button color="primary" mat-raised-button routerLink="/game/settings/players">Start a New Game</button>
+  <button [routerLink]="['game', randomGameId, 'settings','players']" color="primary" mat-raised-button>Start a New
+    Game
+  </button>
 </div>
 

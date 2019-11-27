@@ -10,7 +10,7 @@ import {ConnectComponent} from '@module/game/connect/connect.component';
 
 const routes: Routes = [
   {
-    path: '', component: GameComponent, children: [
+    path: ':gameId', component: GameComponent, children: [
       {
         path: 'settings/players', component: PlayersComponent,
       },
