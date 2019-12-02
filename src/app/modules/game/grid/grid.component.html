@@ -3,8 +3,8 @@
   <ng-container *ngFor="let value of values; index as j">
     <ng-container *ngFor="let category of vm.categories; index as i">
       <div (click)="goToAnswer(category.id, i, value)" *ngIf="!isAnswered(category.id, j, vm.answered)"
-           class="clue">{{value}}</div>
-      <div *ngIf="isAnswered(category.id, j, vm.answered)" class="clue"></div>
+           class="clue unanswered">{{value}}</div>
+      <div *ngIf="isAnswered(category.id, j, vm.answered)" class="clue answered"></div>
     </ng-container>
   </ng-container>
 </div>

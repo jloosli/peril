@@ -23,6 +23,8 @@
     font-weight: 700;
   }
 
-  .clue {
+  .clue.unanswered {
+    cursor: pointer;
   }
+
 }

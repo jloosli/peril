@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject} from '@angular/core';
 import {Player} from '@interface/player';
 import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material';
 
@@ -8,23 +8,28 @@ import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material';
   styleUrls: ['./player-buzz-in.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PlayerBuzzInComponent implements OnInit {
+export class PlayerBuzzInComponent implements AfterViewInit {
 
   answered = false;
   answerMessage: string;
 
-  constructor(private bottomSheetRef: MatBottomSheetRef<PlayerBuzzInComponent>, @Inject(MAT_BOTTOM_SHEET_DATA) public player: Player) {
+  constructor(private bottomSheetRef: MatBottomSheetRef<PlayerBuzzInComponent>, @Inject(MAT_BOTTOM_SHEET_DATA) public player: Player,
+              private cdr: ChangeDetectorRef) {
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
+    this.cdr.detectChanges();
   }
 
   answer(res: boolean) {
     this.answered = true;
     this.answerMessage = `Answered ${res ? '' : 'in'}correctly`;
+    this.cdr.detectChanges();
     console.log(this.answerMessage);
     this.bottomSheetRef.dismiss(res);
+    this.cdr.detectChanges();
     console.log('Dismissed bottom sheet');
+
   }
 
 }
