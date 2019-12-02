@@ -1,6 +1,7 @@
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject} from '@angular/core';
 import {Player} from '@interface/player';
-import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material';
+import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material/bottom-sheet';
+import {delay, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-player-buzz-in',
@@ -15,6 +16,12 @@ export class PlayerBuzzInComponent implements AfterViewInit {
 
   constructor(private bottomSheetRef: MatBottomSheetRef<PlayerBuzzInComponent>, @Inject(MAT_BOTTOM_SHEET_DATA) public player: Player,
               private cdr: ChangeDetectorRef) {
+    this.bottomSheetRef.afterOpened().pipe(
+      tap(() => console.log('opened')),
+      delay(5),
+    ).subscribe(() => this.cdr.detectChanges());
+    this.bottomSheetRef.afterDismissed().pipe(
+    ).subscribe(() => this.cdr.detectChanges());
   }
 
   ngAfterViewInit() {
@@ -24,10 +31,10 @@ export class PlayerBuzzInComponent implements AfterViewInit {
   answer(res: boolean) {
     this.answered = true;
     this.answerMessage = `Answered ${res ? '' : 'in'}correctly`;
-    this.cdr.detectChanges();
+    setTimeout(() => this.cdr.detectChanges(), 1);
     console.log(this.answerMessage);
     this.bottomSheetRef.dismiss(res);
-    this.cdr.detectChanges();
+    setTimeout(() => this.cdr.detectChanges(), 1);
     console.log('Dismissed bottom sheet');
 
   }

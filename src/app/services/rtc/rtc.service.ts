@@ -125,6 +125,11 @@ export abstract class RtcService {
   protected get peer(): Peer {
     if (!this._peer) {
       this._peer = new Peer(this._id$.getValue(), {debug: 2});
+      this.peerOpen$.subscribe(() => console.log('[Peer opened]'));
+      this.peerNewConnection$.subscribe(() => console.log('[Peer New Connection]'));
+      this.peerClose$.subscribe(() => console.log('[Peer Closed]'));
+      this.peerDisconnected$.subscribe(() => console.log('[Peer Disconnected]'));
+      this.peerError$.subscribe(() => console.log('[Peer New Error]'));
     }
     return this._peer;
   }

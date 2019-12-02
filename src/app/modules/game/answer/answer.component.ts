@@ -5,7 +5,7 @@ import {combineLatest, Observable, of, zip} from 'rxjs';
 import {filter, map, mergeMap, takeWhile, throttleTime, withLatestFrom} from 'rxjs/operators';
 import {QuestionList} from '@interface/question';
 import {RtcBaseService} from '@service/rtc/rtc-base.service';
-import {MatBottomSheet} from '@angular/material';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {PlayersService} from '@service/players.service';
 import {PlayerBuzzInComponent} from '@module/game/answer/player-buzz-in/player-buzz-in.component';
 
