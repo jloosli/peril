@@ -6,13 +6,18 @@ import {QuestionComponent} from '@module/game/question/question.component';
 import {GameComponent} from '@module/game/game/game.component';
 import {PlayersComponent} from '@module/game/players/players.component';
 import {ConnectComponent} from '@module/game/connect/connect.component';
+import {QuestionSetComponent} from '@module/game/question-set/question-set.component';
 
 
 const routes: Routes = [
   {
     path: ':gameId', component: GameComponent, children: [
       {
-        path: 'settings/players', component: PlayersComponent,
+        path: 'settings', children: [
+          {path: 'players', component: PlayersComponent},
+          {path: 'question-set', component: QuestionSetComponent},
+          {path: '**', redirectTo: 'players'},
+        ],
       },
       {path: 'connect', component: ConnectComponent},
       {

@@ -53,7 +53,7 @@ export class AnswerComponent implements OnInit, OnDestroy {
         if (!correct) {
           change *= -1;
         }
-        this.questionsSvc.remove(this.category_id, this.idx);
+        this.questionsSvc.setAsAnswered(this.category_id, this.idx);
         this.playersSvc.changeScore(player.id, change);
         if (correct) {
           this.router.navigate(['question'], {relativeTo: this.route});

@@ -5,6 +5,17 @@ export interface Question {
   answered?: boolean;
 }
 
+export interface PerilCategory {
+  id?: string;
+  name: string;
+  questions: Question[];
+}
+
+export interface QuestionSet {
+  name: string;
+  categories: PerilCategory[];
+}
+
 export interface QuestionList {
   [id: string]: Question[];
 }
