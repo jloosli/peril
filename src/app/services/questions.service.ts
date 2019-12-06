@@ -108,15 +108,34 @@ export class QuestionsService {
     name: 'Javascript',
     categories: [
       {
-        name: 'Arrays',
+        name: 'It\'s a feature, not a bug',
         questions: [
-          {answer: '', question: ''},
+          {answer: 'Variations can be "//" or "/* */"', question: 'What are comments'},
+          {answer: 'For, While, and Do While are types of these', question: 'What are loops'},
+          {answer: 'This would be the result of 3+2+"7"', question: 'What is 57'},
+          {answer: 'This is the method used to add to append to an array', question: 'What is .push()'},
+          {answer: 'This is the method used to add to exit a loop before completion', question: 'What is break'},
         ],
       },
       {
         name: 'How do you function?',
         questions: [
-          {answer: '', question: ''},
+          {answer: 'This is used to pop up a request for user input.', question: 'What is prompt()'},
+          {answer: 'This is used to pop up a user notification.', question: 'What is alert()'},
+          {answer: 'This is used to wait and then run something after a specified delay.', question: 'What is setTimeout()'},
+          {answer: 'This is used to convert something like 0x4F to and integer.', question: 'What is parseInt()'},
+          {answer: 'This is a statement used to remove a property as well as its value.', question: 'What is delete'},
+
+        ],
+      },
+      {
+        name: 'Use Strict',
+        questions: [
+          {answer: 'This company developed Javascript', question: 'What is Netscape'},
+          {answer: 'true && false are values for this type', question: 'What is Boolean'},
+          {answer: 'One would use this method to listen to a keypress', question: 'What is .addEventListener()'},
+          {answer: 'Before you can catch something, you\'ve got to do this', question: 'What is try'},
+          {answer: 'You can use this to make sure the string will be a valid URI', question: 'What is encodeURI()'},
         ],
       },
     ],
